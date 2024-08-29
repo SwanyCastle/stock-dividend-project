@@ -38,6 +38,9 @@ dependencies {
     // https://mvnrepository.com/artifact/org.jsoup/jsoup
     implementation 'org.jsoup:jsoup:1.17.2'
 
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-collections4
+    implementation 'org.apache.commons:commons-collections4:4.4'
+
 }
 
 tasks.named('test') {

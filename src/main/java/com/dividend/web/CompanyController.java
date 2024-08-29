@@ -18,15 +18,23 @@ import java.util.List;
 public class CompanyController {
     private final CompanyService companyService;
 
+    /**
+     * 회사 검색 자동완성
+     *
+     * @param keyword
+     * @return List<String>
+     */
     @GetMapping("/auto-complete")
-    public ResponseEntity<?> autoComplete(@RequestParam String keyword) {
-        return null;
+    public ResponseEntity<List<String>> autoComplete(@RequestParam String keyword) {
+//        return ResponseEntity.ok(companyService.autoComplete(keyword));
+        return ResponseEntity.ok(companyService.getCompanyNamesByKeyword(keyword));
     }
 
     /**
      * 회사 정보 전체 조회
-     * @return ResponseEntity<List<CompanyEntity>>
-     *     회사 티커 목록 : O, MMM, NKE, COKE, AAPL, QQQ, SPY, DIA
+     *
+     * @return ResponseEntity<List < CompanyEntity>>
+     * 회사 티커 목록 : O, MMM, NKE, COKE, AAPL, QQQ, SPY, DIA
      */
     @GetMapping
     public ResponseEntity<Page<CompanyEntity>> searchComapny(final Pageable pageable) {
@@ -35,6 +43,7 @@ public class CompanyController {
 
     /**
      * 회사 및 배당금 정보 저장
+     *
      * @param companyRequest
      * @return ResponseEntity<Company>
      */
@@ -48,6 +57,7 @@ public class CompanyController {
         }
 
         Company savedCompany = companyService.save(ticker);
+        companyService.addAutoCompleteKeyword(savedCompany.getName());
         return ResponseEntity.ok(savedCompany);
     }
 
