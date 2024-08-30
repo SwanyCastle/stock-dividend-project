@@ -1,7 +1,6 @@
 package com.dividend.scheduler;
 
 import com.dividend.model.Company;
-import com.dividend.model.Dividend;
 import com.dividend.model.ScrapedResult;
 import com.dividend.persist.CompanyRepository;
 import com.dividend.persist.DividendRepository;
@@ -10,14 +9,18 @@ import com.dividend.persist.entity.DividendEntity;
 import com.dividend.scraper.Scraper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.List;
+
+import static com.dividend.model.constants.CacheKey.KEY_FINANCE;
 
 @Slf4j
 @Component
+@EnableCaching
 @RequiredArgsConstructor
 public class ScraperScheduler {
 
@@ -26,18 +29,23 @@ public class ScraperScheduler {
     private final DividendRepository dividendRepository;
 
     // ThreadPool 테스트
-    @Scheduled(fixedDelay = 1000)
-    public void test1() throws InterruptedException {
-        Thread.sleep(10000);
-        System.out.println(Thread.currentThread().getName() + " -> Test 1 : " + LocalDateTime.now());
-    }
+//    @Scheduled(fixedDelay = 1000)
+//    public void test1() throws InterruptedException {
+//        Thread.sleep(10000);
+//        System.out.println(Thread.currentThread().getName() + " -> Test 1 : " + LocalDateTime.now());
+//    }
+//
+//    @Scheduled(fixedDelay = 1000)
+//    public void test2() throws InterruptedException {
+//        System.out.println(Thread.currentThread().getName() + " -> Test 2 : " + LocalDateTime.now());
+//    }
 
-    @Scheduled(fixedDelay = 1000)
-    public void test2() throws InterruptedException {
-        System.out.println(Thread.currentThread().getName() + " -> Test 2 : " + LocalDateTime.now());
-    }
-
-//    @Scheduled(cron = "${scheduler.scrap.yahoo}")
+    // 이렇게 Scheduler 에다가 CacheEvict 를 적용하게 되면 Scheduler 가 동작할 때 마다
+    // Cache 에 있는 데이터들이 지워지게 된다. 이후에 회사 배당금을 조회하는 시점에 다시 캐시에 저장되게 된다
+    // redis 에 있는 key 중 finance 로 시작하는 키는 모두 비워준다는 의미
+    // @CacheEvict(value = "finance", key = "3M Company") 이런식으로 하면 특정 키만 지워준다
+    @CacheEvict(value = KEY_FINANCE, allEntries = true)
+    @Scheduled(cron = "${scheduler.scrap.yahoo}")
     public void yahooFinanceScrapSchedule() {
         // 저장된 회사 목록을 조회
         List<CompanyEntity> companyEntityList = companyRepository.findAll();
