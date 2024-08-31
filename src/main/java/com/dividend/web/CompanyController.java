@@ -7,7 +7,8 @@ import com.dividend.service.CompanyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.redis.cache.RedisCacheManager;
+//import org.springframework.data.redis.cache.RedisCacheManager; // -> 갑자기 안됨 왜지 근데
+import org.springframework.cache.CacheManager; // 이거 추가하니깐 또 되네 ...
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.ObjectUtils;
@@ -21,7 +22,7 @@ import java.util.List;
 public class CompanyController {
 
     private final CompanyService companyService;
-    private final RedisCacheManager redisCacheManager;
+    private final CacheManager redisCacheManager;
 
     /**
      * 회사 검색 자동완성

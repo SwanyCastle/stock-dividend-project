@@ -1,5 +1,8 @@
 package com.dividend.service;
 
+import com.dividend.exception.impl.AlreadyExistUserException;
+import com.dividend.exception.impl.DoseNotMatchedPasswordException;
+import com.dividend.exception.impl.UserNotFoundException;
 import com.dividend.model.Auth;
 import com.dividend.persist.MemberRepository;
 import com.dividend.persist.entity.MemberEntity;
@@ -22,13 +25,13 @@ public class MemberService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return memberRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Couldn't find user -> " + username));
+                .orElseThrow(() -> new UserNotFoundException(username));
     }
 
     public MemberEntity register(Auth.SignUp member) {
         boolean exists = memberRepository.existsByUsername(member.getUsername());
         if (exists) {
-            throw new RuntimeException("이미 사용 중인 아이디 입니다.");
+            throw new AlreadyExistUserException();
         }
 
         member.setPassword(passwordEncoder.encode(member.getPassword()));
@@ -37,10 +40,10 @@ public class MemberService implements UserDetailsService {
 
     public MemberEntity authenticate(Auth.SignIn member) {
         MemberEntity user = memberRepository.findByUsername(member.getUsername())
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 ID 입니다. -> " + member.getUsername()));
+                .orElseThrow(() -> new UserNotFoundException(member.getUsername()));
 
         if (!passwordEncoder.matches(member.getPassword(), user.getPassword())) {
-            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+            throw new DoseNotMatchedPasswordException();
         }
 
         return user;

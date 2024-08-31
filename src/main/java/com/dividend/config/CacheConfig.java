@@ -16,7 +16,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 @RequiredArgsConstructor
-public class CachecConfig {
+public class CacheConfig {
 
     @Value("${spring.data.redis.host}")
     private String host;

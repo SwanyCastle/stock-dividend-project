@@ -1,5 +1,7 @@
 package com.dividend.service;
 
+import com.dividend.exception.impl.FailedToScrapTickerException;
+import com.dividend.exception.impl.NoCompanyException;
 import com.dividend.model.Company;
 import com.dividend.model.ScrapedResult;
 import com.dividend.persist.CompanyRepository;
@@ -16,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,7 +45,7 @@ public class CompanyService {
         // ticker 를 기준으로 회사를 스크래핑
         Company company = yahooFinanceScraper.scrapCompanyByTicker(ticker);
         if (ObjectUtils.isEmpty(company)) {
-            throw new RuntimeException("Failed to scrap ticker -> " + ticker);
+            throw new FailedToScrapTickerException(ticker);
         }
 
         // 해당 회사가 존재할 경우, 회사의 배당금 정보를 스크래핑
@@ -83,7 +84,7 @@ public class CompanyService {
 
     public String deleteCompany(String ticker) {
         CompanyEntity company = companyRepository.findByTicker(ticker)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 회사입니다."));
+                .orElseThrow(NoCompanyException::new);
 
         dividendRepository.deleteAllByCompanyId(company.getId());
         companyRepository.delete(company);
