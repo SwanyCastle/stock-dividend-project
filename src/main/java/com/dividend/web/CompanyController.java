@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,6 +38,7 @@ public class CompanyController {
      * 회사 티커 목록 : O, MMM, NKE, COKE, AAPL, QQQ, SPY, DIA
      */
     @GetMapping
+    @PreAuthorize("hasRole('READ')")
     public ResponseEntity<Page<CompanyEntity>> searchComapny(final Pageable pageable) {
         return ResponseEntity.ok(companyService.getAllCompany(pageable));
     }
@@ -48,6 +50,7 @@ public class CompanyController {
      * @return ResponseEntity<Company>
      */
     @PostMapping
+    @PreAuthorize("hasRole('WRITE')")
     public ResponseEntity<Company> addCompany(
             @RequestBody Company companyRequest
     ) {
@@ -61,8 +64,12 @@ public class CompanyController {
         return ResponseEntity.ok(savedCompany);
     }
 
-    @DeleteMapping
-    public ResponseEntity<?> deleteCompany() {
+    @DeleteMapping("/{ticker}")
+    public ResponseEntity<?> deleteCompany(@PathVariable String ticker) {
         return null;
+    }
+
+    public void clearFinanceCache(String companyName) {
+
     }
 }

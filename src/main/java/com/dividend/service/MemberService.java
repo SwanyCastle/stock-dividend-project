@@ -4,12 +4,14 @@ import com.dividend.model.Auth;
 import com.dividend.persist.MemberRepository;
 import com.dividend.persist.entity.MemberEntity;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MemberService implements UserDetailsService {
@@ -34,6 +36,13 @@ public class MemberService implements UserDetailsService {
     }
 
     public MemberEntity authenticate(Auth.SignIn member) {
-        return null;
+        MemberEntity user = memberRepository.findByUsername(member.getUsername())
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 ID 입니다. -> " + member.getUsername()));
+
+        if (!passwordEncoder.matches(member.getPassword(), user.getPassword())) {
+            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+        }
+
+        return user;
     }
 }
