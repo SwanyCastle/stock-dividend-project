@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -78,6 +79,18 @@ public class CompanyService {
     public List<String> autoComplete(String keyword) {
         return trie.prefixMap(keyword).keySet()
                 .stream().collect(Collectors.toList());
+    }
+
+    public String deleteCompany(String ticker) {
+        CompanyEntity company = companyRepository.findByTicker(ticker)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 회사입니다."));
+
+        dividendRepository.deleteAllByCompanyId(company.getId());
+        companyRepository.delete(company);
+
+        deleteAutoCompleteKeyword(company.getName());
+
+        return company.getName();
     }
 
     public void deleteAutoCompleteKeyword(String keyword) {

@@ -1,11 +1,13 @@
 package com.dividend.web;
 
 import com.dividend.model.Company;
+import com.dividend.model.constants.CacheKey;
 import com.dividend.persist.entity.CompanyEntity;
 import com.dividend.service.CompanyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.ObjectUtils;
@@ -17,7 +19,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/company")
 public class CompanyController {
+
     private final CompanyService companyService;
+    private final RedisCacheManager redisCacheManager;
 
     /**
      * 회사 검색 자동완성
@@ -65,11 +69,14 @@ public class CompanyController {
     }
 
     @DeleteMapping("/{ticker}")
-    public ResponseEntity<?> deleteCompany(@PathVariable String ticker) {
-        return null;
+    @PreAuthorize("hasRole('WRITE')")
+    public ResponseEntity<String> deleteCompany(@PathVariable String ticker) {
+        String companyName = companyService.deleteCompany(ticker);
+        clearFinanceCache(companyName);
+        return ResponseEntity.ok(companyName);
     }
 
     public void clearFinanceCache(String companyName) {
-
+        redisCacheManager.getCache(CacheKey.KEY_FINANCE).evict(companyName);
     }
 }
