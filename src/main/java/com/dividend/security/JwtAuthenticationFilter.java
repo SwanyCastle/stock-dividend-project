@@ -32,6 +32,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (StringUtils.hasText(token) && tokenProvider.validateToken(token)) {
             Authentication auth = tokenProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(auth);
+
+            // 사용자 명과 요청 경로가 대입이되어 어떤 사용자가 어떤 경로로 접근했는지에 대한 로그를 볼 수 있다.
+            log.info(String.format("[%s] - > %s", tokenProvider.getUsername(token), request.getRequestURI()));
         }
 
         filterChain.doFilter(request, response);

@@ -75,6 +75,7 @@ public class ScraperScheduler {
 
                         if (!exists) {
                             dividendRepository.save(entity);
+                            log.info("새로운 배당금 정보를 저장했습니다 -> " + entity.toString());
                         }
                     });
 

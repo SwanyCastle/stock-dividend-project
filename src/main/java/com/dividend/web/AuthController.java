@@ -32,7 +32,7 @@ public class AuthController {
     public ResponseEntity<String> signIn(@RequestBody Auth.SignIn request) {
         MemberEntity member = memberService.authenticate(request);
         String token = tokenProvider.generateToken(member.getUsername(), member.getRoles());
-
+        log.info("사용자 로그인 -> " + request.getUsername());
         return ResponseEntity.ok(token);
     }
 }
