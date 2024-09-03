@@ -69,6 +69,11 @@ public class CompanyController {
         return ResponseEntity.ok(savedCompany);
     }
 
+    /**
+     * 회사 정보 삭제
+     * @param ticker
+     * @return String
+     */
     @DeleteMapping("/{ticker}")
     @PreAuthorize("hasRole('WRITE')")
     public ResponseEntity<String> deleteCompany(@PathVariable String ticker) {
