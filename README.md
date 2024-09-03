@@ -94,19 +94,19 @@
       <td rowspan="4">회사</td>
       <td>회사 및 배당금 정보 저장</td>
       <td>/company</td>
-      <td>GET</td>
+      <td>POST</td>
       <td>200</td>
     </tr>
     <tr>
       <td>회사 전체 조회</td>
       <td>/company</td>
-      <td>PUT</td>
+      <td>GET</td>
       <td>200</td>
     </tr>
     <tr>
       <td>회사 이름 자동 완성</td>
       <td>/company/auto-complete</td>
-      <td>DELETE</td>
+      <td>GET</td>
       <td>200</td>
     </tr>
     <tr>
@@ -119,7 +119,7 @@
       <td>배당금</td>
       <td>배당금 지급 내역 조회</td>
       <td>/finance/dividend/{companyName}</td>
-      <td>DELETE</td>
+      <td>GET</td>
       <td>200</td>
     </tr>
   </tbody>
