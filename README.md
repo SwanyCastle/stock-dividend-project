@@ -78,33 +78,47 @@
   </thead>
   <tbody>
     <tr>
-      <td rowspan="5">일기</td>
-      <td>일기 생성</td>
-      <td>/create/diary?date={date}</td>
+      <td rowspan="2">사용자</td>
+      <td>사용자 생성</td>
+      <td>/auth/sign-up</td>
       <td>POST</td>
       <td>200</td>
     </tr>
     <tr>
-      <td>일기 조회</td>
-      <td>/read/diary?date={date}</td>
+      <td>사용자 로그인</td>
+      <td>/auth/sign-in</td>
+      <td>POST</td>
+      <td>200</td>
+    </tr>
+    <tr>
+      <td rowspan="4">회사</td>
+      <td>회사 및 배당금 정보 저장</td>
+      <td>/company</td>
       <td>GET</td>
       <td>200</td>
     </tr>
     <tr>
-      <td>일기 구간 조회</td>
-      <td>/read/diaries?date={date}</td>
-      <td>GET</td>
-      <td>200</td>
-    </tr>
-    <tr>
-      <td>일기 수정</td>
-      <td>/update/diary?date={date}</td>
+      <td>회사 전체 조회</td>
+      <td>/company</td>
       <td>PUT</td>
       <td>200</td>
     </tr>
     <tr>
-      <td>일기 삭제</td>
-      <td>/delete/diary?date={date}</td>
+      <td>회사 이름 자동 완성</td>
+      <td>/company/auto-complete</td>
+      <td>DELETE</td>
+      <td>200</td>
+    </tr>
+    <tr>
+      <td>회사 삭제</td>
+      <td>/company/{ticker}</td>
+      <td>DELETE</td>
+      <td>200</td>
+    </tr>
+    <tr>
+      <td>배당금</td>
+      <td>배당금 지급 내역 조회</td>
+      <td>/finance/dividend/{companyName}</td>
       <td>DELETE</td>
       <td>200</td>
     </tr>
